@@ -237,14 +237,11 @@ class TabbedPanel extends JFrame {
 	  	}
 	  }
 	  catch ( IOException e ) {
-	  	areaError.setText("-- Compiled without errors -- ");
+	  	areaError.setText("Succes");
 	  }
 	  
-	  System.out.println("Llegue al visitor");
 	  CompilersEval Visitor = new CompilersEval();
-	  System.out.println("Cree Objeto Visitor");
-	  System.out.println(tree);
 	  Visitor.visit(tree);
-
+	  CompilersType Type = new CompilersType();
 	}
 }
