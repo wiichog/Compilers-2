@@ -78,15 +78,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitMethodType(CompilersParser.MethodTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#parameterDeclaration}.
+	 * Enter a parse tree produced by {@link CompilersParser#parameter}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx);
+	void enterParameter(CompilersParser.ParameterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#parameterDeclaration}.
+	 * Exit a parse tree produced by {@link CompilersParser#parameter}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx);
+	void exitParameter(CompilersParser.ParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#parameterType}.
 	 * @param ctx the parse tree
@@ -168,15 +168,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitScan(CompilersParser.ScanContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#ifBlock}.
+	 * Enter a parse tree produced by {@link CompilersParser#myIf}.
 	 * @param ctx the parse tree
 	 */
-	void enterIfBlock(CompilersParser.IfBlockContext ctx);
+	void enterMyIf(CompilersParser.MyIfContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#ifBlock}.
+	 * Exit a parse tree produced by {@link CompilersParser#myIf}.
 	 * @param ctx the parse tree
 	 */
-	void exitIfBlock(CompilersParser.IfBlockContext ctx);
+	void exitMyIf(CompilersParser.MyIfContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#elseBlock}.
 	 * @param ctx the parse tree
@@ -258,15 +258,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitNExpression(CompilersParser.NExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#orExpression}.
+	 * Enter a parse tree produced by {@link CompilersParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrExpression(CompilersParser.OrExpressionContext ctx);
+	void enterExpression(CompilersParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#orExpression}.
+	 * Exit a parse tree produced by {@link CompilersParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrExpression(CompilersParser.OrExpressionContext ctx);
+	void exitExpression(CompilersParser.ExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#andExpression}.
 	 * @param ctx the parse tree
@@ -358,15 +358,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitArg(CompilersParser.ArgContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#declaredMethodCall}.
+	 * Enter a parse tree produced by {@link CompilersParser#methodCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx);
+	void enterMethodCall(CompilersParser.MethodCallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#declaredMethodCall}.
+	 * Exit a parse tree produced by {@link CompilersParser#methodCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx);
+	void exitMethodCall(CompilersParser.MethodCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#as_op}.
 	 * @param ctx the parse tree

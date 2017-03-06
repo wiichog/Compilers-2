@@ -65,7 +65,7 @@ public class CompilersBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParameter(CompilersParser.ParameterContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -128,7 +128,7 @@ public class CompilersBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIfBlock(CompilersParser.IfBlockContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMyIf(CompilersParser.MyIfContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -191,7 +191,7 @@ public class CompilersBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOrExpression(CompilersParser.OrExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExpression(CompilersParser.ExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -261,7 +261,7 @@ public class CompilersBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMethodCall(CompilersParser.MethodCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -19,21 +19,20 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitDeclaration(CompilersParser.DeclarationContext ctx) { 
-		//System.out.println("I visited visitDeclaration");
-		//System.out.println(ctx.getText());
-		return visitChildren(ctx); 
-	}
-	
-	@Override 
 	public String visitVarDeclaration(CompilersParser.VarDeclarationContext ctx) { 
 		//System.out.println("I visited visitVarDeclaration");
-		String[] SymbolInformation = {ctx.getChild(0).getText(),ctx.getChild(1).getText(),Integer.toString(EnvironmentCounter)};
+		//System.out.println("******************************************");
+		//System.out.println("Type " + ctx.getChild(0).getText());
+		//System.out.println("Name " + ctx.getChild(1).getText());
+		//System.out.println("Counter " + Integer.toString(EnvironmentCounter));
+		//System.out.println("ctx " + ctx.getText());
+		//System.out.println("******************************************");
+		String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter)};
 		SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
 		//System.out.println("******************************************");
 		//for (Map.Entry entry : SymbolTable.entrySet()) {
 		//	    System.out.println(entry.getKey() + ", " + Arrays.toString(SymbolTable.get(entry.getKey())));
-		//    }
+		//   }
 		//System.out.println("******************************************");
 		return visitChildren(ctx); 
 		
@@ -43,57 +42,71 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	public String visitStructDeclaration(CompilersParser.StructDeclarationContext ctx) { 
 				//System.out.println("I visited visitStructDeclaration");
 				EnvironmentCounter = EnvironmentCounter + 1;
-				String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(1).getText(),Integer.toString(EnvironmentCounter)};
-				SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
-				return visitChildren(ctx); 
-	}
-	
-	@Override 
-	public String visitVarType(CompilersParser.VarTypeContext ctx) { 
-				//System.out.println("I visited visitVarType");
-				//System.out.println(ctx.getText());
+				String[] SymbolInformation = {ctx.getChild(1).getText(),"struc",Integer.toString(EnvironmentCounter)};
+				SymbolTable.put(ctx.getChild(1).getText(), SymbolInformation);
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitMethodDeclaration(CompilersParser.MethodDeclarationContext ctx) { 
 				//System.out.println("I visited visitMethodDeclaration");
+				EnvironmentCounter = EnvironmentCounter + 1;
+				String Cadena = "";
+				String Parameters[] = new String[ctx.children.size()-5];
+				for(int i=3; i<ctx.children.size()-2;i++){
+					try{
+						//String ParameterType = ctx.getChild(i).getChild(0).getText();
+						//String ParameterName = ctx.getChild(i).getChild(1).getText();
+						Cadena = ctx.getChild(i).getChild(1).getText() + "," + Cadena;
+						}
+					catch(Exception e){}
+				}
+				String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter), Cadena};
+				SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
+				//System.out.println("******************************************");
+				//for (Map.Entry entry : SymbolTable.entrySet()) {
+				//	    System.out.println(entry.getKey() + ", " + Arrays.toString(SymbolTable.get(entry.getKey())));
+				//   }
+				//System.out.println("******************************************");
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
-	public String visitMethodType(CompilersParser.MethodTypeContext ctx) { 
-				//System.out.println("I visited visitMethodType");
-				return visitChildren(ctx); 
-	}
-	
-	@Override 
-	public String visitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx) { 
+	public String visitParameter(CompilersParser.ParameterContext ctx) { 
 				//System.out.println("I visited visitParameterDeclaration");
-				return visitChildren(ctx); 
-	}
-	
-	@Override 
-	public String visitParameterType(CompilersParser.ParameterTypeContext ctx) { 
-				//System.out.println("I visited visitParameterType");
+				String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter)};
+				SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
+				//System.out.println("******************************************");
+				//for (Map.Entry entry : SymbolTable.entrySet()) {
+				//	    System.out.println(entry.getKey() + ", " + Arrays.toString(SymbolTable.get(entry.getKey())));
+				//   }
+				//System.out.println("******************************************");
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitBlock(CompilersParser.BlockContext ctx) { 
 				//System.out.println("I visited visitBlock");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitStatement(CompilersParser.StatementContext ctx) { 
 				//System.out.println("I visited visitStatement");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitAssignation(CompilersParser.AssignationContext ctx) { 
 				//System.out.println("I visited visitAssignation");
+				//System.out.println("Expresion "+ctx.getText());
+				//System.out.println("Hijo0 "+ctx.getChild(0).getText());
+				//System.out.println("Hijo0 Type "+visit(ctx.getChild(0)));
+				//System.out.println("Hijo2 "+ctx.getChild(2).getText());
+				//System.out.println("Hijo2 Type "+visit(ctx.getChild(2)));
+				//System.out.println("Counter " + Integer.toString(EnvironmentCounter));
 				return visitChildren(ctx); 
 	}
 	
@@ -122,8 +135,9 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitIfBlock(CompilersParser.IfBlockContext ctx) { 
+	public String visitMyIf(CompilersParser.MyIfContext ctx) { 
 				//System.out.println("I visited visitIfBlock");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
@@ -142,7 +156,12 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitDotLocation(CompilersParser.DotLocationContext ctx) { 
 				//System.out.println("I visited visitDotLocation");
-				return visitChildren(ctx); 
+				String[] ctxInformation = SymbolTable.get(ctx.getChild(0).getText() + Integer.toString(EnvironmentCounter));
+				String[] FatherInformation = SymbolTable.get(ctxInformation[1]);
+				String FatherScope = FatherInformation[2];
+				String[] ctxRealInformation = SymbolTable.get(ctx.getChild(2).getText() + FatherScope);
+				//System.out.println("The type for " + ctx.getChild(2).getText() + FatherScope + " is " + ctxRealInformation[1]);
+				return ctxRealInformation[1]; 
 	}
 	
 	@Override 
@@ -153,8 +172,9 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	@Override 
 	public String visitVariable(CompilersParser.VariableContext ctx) { 
-				//System.out.println("I visited visitVariable");
-				return visitChildren(ctx); 
+				String Key = ctx.getText()+Integer.toString(EnvironmentCounter);
+				String[] SymbolInformation = SymbolTable.get(Key);
+				return SymbolInformation[1];
 	}
 	
 	@Override 
@@ -176,7 +196,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitOrExpression(CompilersParser.OrExpressionContext ctx) { 
+	public String visitExpression(CompilersParser.ExpressionContext ctx) { 
 				//System.out.println("I visited visitOrExpression");
 				return visitChildren(ctx); 
 	}
@@ -196,19 +216,55 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitRelationExpression(CompilersParser.RelationExpressionContext ctx) { 
 				//System.out.println("I visited visitRelationExpression");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitAddSubsExpression(CompilersParser.AddSubsExpressionContext ctx) { 
 				//System.out.println("I visited visitAddSubsExpression");
-				return visitChildren(ctx); 
+				//System.out.println("Imprimiendo" + ctx.getChild(0).getText());
+				String type = null;
+				if(ctx.children.size()>1){
+					for(int i =0;i<ctx.children.size();i++){
+						if(i % 2 == 0){
+							if(type==null){
+								type = visit(ctx.getChild(i));
+							}
+							else if(type.equals(visit(ctx.getChild(i)))&&(!ctx.getChild(i).equals("boolean")));
+							else{
+								return "Error de asignacion en la linea "+ctx.getStart().getLine();
+								}
+									  }
+															}
+								return type;
+										 }
+				else{
+					return visit(ctx.getChild(0));
+				}
 	}
 	
 	@Override 
 	public String visitMulDivExpression(CompilersParser.MulDivExpressionContext ctx) { 
 				//System.out.println("I visited visitMulDivExpression");
-				return visitChildren(ctx); 
+		String type = null;
+		if(ctx.children.size()>1){
+			for(int i =0;i<ctx.children.size();i++){
+				if(i % 2 == 0){
+					if(type==null){
+						type = visit(ctx.getChild(i));
+					}
+					else if(type.equals(visit(ctx.getChild(i)))&&(!ctx.getChild(i).equals("boolean")));
+					else{
+						return "Error de asignacion en la linea "+ctx.getStart().getLine();
+						}
+							  }
+													}
+						return type;
+								 }
+		else{
+			return visit(ctx.getChild(0));
+		}
 	}
 	
 	@Override 
@@ -236,14 +292,22 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx) { 
-				//System.out.println("I visited visitDeclaredMethodCall");
+	public String visitMethodCall(CompilersParser.MethodCallContext ctx) { 
+				System.out.println("I visited visitDeclaredMethodCall");
+				System.out.println(EnvironmentCounter);
+				System.out.println(ctx.getText());
+				System.out.println("******************************************");
+				for (Map.Entry entry : SymbolTable.entrySet()) {
+					    System.out.println(entry.getKey() + ", " + Arrays.toString(SymbolTable.get(entry.getKey())));
+				   }
+				System.out.println("******************************************");
 				return visitChildren(ctx); 
 	}
 	
 	@Override 
 	public String visitAs_op(CompilersParser.As_opContext ctx) { 
 				//System.out.println("I visited visitAs_op");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
@@ -286,19 +350,19 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitInt_literal(CompilersParser.Int_literalContext ctx) { 
 				//System.out.println("I visited visitInt_literal");
-				return visitChildren(ctx); 
+				return "int"; 
 	}
 	
 	@Override 
 	public String visitChar_literal(CompilersParser.Char_literalContext ctx) { 
 				//System.out.println("I visited visitChar_literal");
-				return visitChildren(ctx); 
+				return "char"; 
 	}
 	
 	@Override 
 	public String visitBool_literal(CompilersParser.Bool_literalContext ctx) { 
 				//System.out.println("I visited visitBool_literal");
-				return visitChildren(ctx); 
+				return "boolean"; 
 	}
 
 }
