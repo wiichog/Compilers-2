@@ -92,8 +92,8 @@ class TabbedPanel extends JFrame {
 			JButton cut = tool.add(Cut), cop = tool.add(Copy), pas = tool.add(Paste);
 			JButton antlr = tool.add(text2Tree);
 			//Symbols to add
-			cut.setText(null); cut.setIcon(new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/cut.gif"));
 			cop.setText(null); cop.setIcon(new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/copy.gif"));
+			cut.setText(null); cut.setIcon(new ImageIcon("C:/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/cut.icon"));
 			pas.setText(null); pas.setIcon(new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/paste.gif"));
 
 			Save.setEnabled(false);
