@@ -1,6 +1,5 @@
 package compilers;
 import java.util.*;
-import java.io.*;
 
 public class CompilersEval extends CompilersBaseVisitor<String> {
 	public int EnvironmentCounter = 0;
@@ -52,15 +51,17 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				//System.out.println("I visited visitMethodDeclaration");
 				EnvironmentCounter = EnvironmentCounter + 1;
 				String Cadena = "";
-				String Parameters[] = new String[ctx.children.size()-5];
 				for(int i=3; i<ctx.children.size()-2;i++){
 					try{
 						//String ParameterType = ctx.getChild(i).getChild(0).getText();
 						//String ParameterName = ctx.getChild(i).getChild(1).getText();
-						Cadena = ctx.getChild(i).getChild(1).getText() + "," + Cadena;
+						//System.out.println(ctx.getText());
+						Cadena = Cadena + "," + ctx.getChild(i).getChild(1).getText();
 						}
 					catch(Exception e){}
 				}
+				try{
+				Cadena = Cadena.substring(1,Cadena.length());}catch(Exception e){}
 				String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter), Cadena};
 				SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
 				//System.out.println("******************************************");
@@ -87,6 +88,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitBlock(CompilersParser.BlockContext ctx) { 
 				//System.out.println("I visited visitBlock");
+				//String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter)};
+				//SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
 				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
@@ -136,8 +139,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	@Override 
 	public String visitMyIf(CompilersParser.MyIfContext ctx) { 
-				//System.out.println("I visited visitIfBlock");
-				//System.out.println(ctx.getText());
+				System.out.println("I visited visitMyIf");
+				System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
@@ -293,14 +296,19 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	@Override 
 	public String visitMethodCall(CompilersParser.MethodCallContext ctx) { 
-				System.out.println("I visited visitDeclaredMethodCall");
-				System.out.println(EnvironmentCounter);
-				System.out.println(ctx.getText());
-				System.out.println("******************************************");
-				for (Map.Entry entry : SymbolTable.entrySet()) {
-					    System.out.println(entry.getKey() + ", " + Arrays.toString(SymbolTable.get(entry.getKey())));
-				   }
-				System.out.println("******************************************");
+				//System.out.println("I visited visitDeclaredMethodCall");
+				String ctxString = ctx.getText();
+				//System.out.println("******************************************");
+				for (Map.Entry<String,String[]> e : SymbolTable.entrySet()){
+					if (e.getKey().startsWith("suma")) {
+						String[] SymbolInformation = SymbolTable.get(e.getKey());
+						String answer = ctxString.substring(ctxString.indexOf("(")+1,ctxString.indexOf(")"));
+						if(SymbolInformation[3].equals(answer)){
+							return SymbolInformation[1];
+						}
+					  }
+				}
+				//System.out.println("******************************************");
 				return visitChildren(ctx); 
 	}
 	
