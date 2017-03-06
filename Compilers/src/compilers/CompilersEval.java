@@ -104,12 +104,9 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitAssignation(CompilersParser.AssignationContext ctx) { 
 				//System.out.println("I visited visitAssignation");
-				//System.out.println("Expresion "+ctx.getText());
-				//System.out.println("Hijo0 "+ctx.getChild(0).getText());
-				//System.out.println("Hijo0 Type "+visit(ctx.getChild(0)));
-				//System.out.println("Hijo2 "+ctx.getChild(2).getText());
-				//System.out.println("Hijo2 Type "+visit(ctx.getChild(2)));
-				//System.out.println("Counter " + Integer.toString(EnvironmentCounter));
+				if(visit(ctx.getChild(0)).equals(visit(ctx.getChild(2)))){
+					System.out.println(visit(ctx.getChild(0)));
+				}
 				return visitChildren(ctx); 
 	}
 	
@@ -139,8 +136,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	@Override 
 	public String visitMyIf(CompilersParser.MyIfContext ctx) { 
-				System.out.println("I visited visitMyIf");
-				System.out.println(ctx.getText());
+				//System.out.println("I visited visitMyIf");
+				//System.out.println(ctx.getText());
 				return visitChildren(ctx); 
 	}
 	
