@@ -32,8 +32,23 @@ class TabbedPanel extends JFrame {
 	private List<String> Errors;
 	JPanel treePanel = new JPanel();
 	JScrollPane scrollTreePanel = new JScrollPane(treePanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
 	public TabbedPanel(){
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("C:/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/Compilers.txt"));
+		    StringBuilder sb = new StringBuilder();
+		    String line = br.readLine();
+		    while (line != null) {
+		        sb.append(line);
+		        sb.append(System.lineSeparator());
+		        line = br.readLine();
+		    }
+		    String everything = sb.toString();
+		   areaGrammar.setText(everything);
+		    br.close();
+		} catch(Exception e) {	}
+		
+		
 		
 			add(scrollTreePanel,BorderLayout.CENTER);
 			scrollTreePanel.setVisible(true);
@@ -92,9 +107,9 @@ class TabbedPanel extends JFrame {
 			JButton cut = tool.add(Cut), cop = tool.add(Copy), pas = tool.add(Paste);
 			JButton antlr = tool.add(text2Tree);
 			//Symbols to add
-			cop.setText(null); cop.setIcon(new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/copy.gif"));
-			cut.setText(null); cut.setIcon(new ImageIcon("C:/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/cut.icon"));
-			pas.setText(null); pas.setIcon(new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/paste.gif"));
+			cop.setText(null); cop.setIcon(new ImageIcon("/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/copy.gif"));
+			cut.setText(null); cut.setIcon(new ImageIcon("C:/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/cut.gif"));
+			pas.setText(null); pas.setIcon(new ImageIcon("/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/paste.gif"));
 
 			Save.setEnabled(false);
 			SaveAs.setEnabled(false);
@@ -123,7 +138,7 @@ class TabbedPanel extends JFrame {
 		}
 	};
 	//Symbol to add
-	Action Open = new AbstractAction("Open", new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/open.gif")) {
+	Action Open = new AbstractAction("Open", new ImageIcon("/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/open.gif")) {
 		public void actionPerformed(ActionEvent e) {
 			saveOld();
 			if(dialog.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
@@ -133,7 +148,7 @@ class TabbedPanel extends JFrame {
 		}
 	};
 	//Symbol to add
-	Action Save = new AbstractAction("Save", new ImageIcon("C:/Users/Freddie/workspace/antlr4/src/antlr4/Editor/save.gif")) {
+	Action Save = new AbstractAction("Save", new ImageIcon("/Users/Juan Luis Garcia/Documents/MEGAsync/UVG SEPTIMO SEMESTRE/Compiladores/Compilers-2/Compilers/src/compilers/save.gif")) {
 		public void actionPerformed(ActionEvent e) {
 			if(!currentFile.equals("Untitled"))
 				saveFile(currentFile);
@@ -231,7 +246,6 @@ class TabbedPanel extends JFrame {
 	  try {
 	  	Errors = Files.readAllLines(file, Charset.forName("UTF-8"));
 	  	Files.deleteIfExists(file);
-	  	System.out.println(Errors);
 	  	for (int i = 0; i < Errors.size(); i++) {
 	  		areaError.append("(" + (i + 1) + "): " + Errors.get(i) + "\n");
 	  	}
