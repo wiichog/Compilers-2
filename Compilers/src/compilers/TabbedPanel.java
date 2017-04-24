@@ -8,6 +8,7 @@ import javax.swing.text.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -256,6 +257,11 @@ class TabbedPanel extends JFrame {
 	  
 	  CompilersEval Visitor = new CompilersEval();
 	  Visitor.visit(tree);
-	  CompilersType Type = new CompilersType();
+	  System.out.println("******************************************");
+			for (Map.Entry entry : Visitor.SymbolTable.entrySet()) {
+				    System.out.println(entry.getKey() + ", " + Arrays.toString(Visitor.SymbolTable.get(entry.getKey())));
+			   }
+	  System.out.println("******************************************");
+	  
 	}
 }

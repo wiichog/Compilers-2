@@ -77,15 +77,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitMethodType(CompilersParser.MethodTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#parameter}.
+	 * Enter a parse tree produced by {@link CompilersParser#parameterDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameter(CompilersParser.ParameterContext ctx);
+	void enterParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#parameter}.
+	 * Exit a parse tree produced by {@link CompilersParser#parameterDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameter(CompilersParser.ParameterContext ctx);
+	void exitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#parameterType}.
 	 * @param ctx the parse tree
@@ -167,15 +167,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitScan(CompilersParser.ScanContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#myIf}.
+	 * Enter a parse tree produced by {@link CompilersParser#ifBlock}.
 	 * @param ctx the parse tree
 	 */
-	void enterMyIf(CompilersParser.MyIfContext ctx);
+	void enterIfBlock(CompilersParser.IfBlockContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#myIf}.
+	 * Exit a parse tree produced by {@link CompilersParser#ifBlock}.
 	 * @param ctx the parse tree
 	 */
-	void exitMyIf(CompilersParser.MyIfContext ctx);
+	void exitIfBlock(CompilersParser.IfBlockContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#elseBlock}.
 	 * @param ctx the parse tree
@@ -186,6 +186,16 @@ public interface CompilersListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitElseBlock(CompilersParser.ElseBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CompilersParser#elseTailBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseTailBlock(CompilersParser.ElseTailBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CompilersParser#elseTailBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseTailBlock(CompilersParser.ElseTailBlockContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#location}.
 	 * @param ctx the parse tree
@@ -257,15 +267,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitNExpression(CompilersParser.NExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#expression}.
+	 * Enter a parse tree produced by {@link CompilersParser#orExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(CompilersParser.ExpressionContext ctx);
+	void enterOrExpression(CompilersParser.OrExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#expression}.
+	 * Exit a parse tree produced by {@link CompilersParser#orExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(CompilersParser.ExpressionContext ctx);
+	void exitOrExpression(CompilersParser.OrExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#andExpression}.
 	 * @param ctx the parse tree
@@ -357,15 +367,15 @@ public interface CompilersListener extends ParseTreeListener {
 	 */
 	void exitArg(CompilersParser.ArgContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CompilersParser#methodCall}.
+	 * Enter a parse tree produced by {@link CompilersParser#declaredMethodCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterMethodCall(CompilersParser.MethodCallContext ctx);
+	void enterDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CompilersParser#methodCall}.
+	 * Exit a parse tree produced by {@link CompilersParser#declaredMethodCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitMethodCall(CompilersParser.MethodCallContext ctx);
+	void exitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CompilersParser#as_op}.
 	 * @param ctx the parse tree

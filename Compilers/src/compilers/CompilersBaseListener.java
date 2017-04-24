@@ -100,13 +100,13 @@ public class CompilersBaseListener implements CompilersListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter(CompilersParser.ParameterContext ctx) { }
+	@Override public void enterParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameter(CompilersParser.ParameterContext ctx) { }
+	@Override public void exitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -208,13 +208,13 @@ public class CompilersBaseListener implements CompilersListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMyIf(CompilersParser.MyIfContext ctx) { }
+	@Override public void enterIfBlock(CompilersParser.IfBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMyIf(CompilersParser.MyIfContext ctx) { }
+	@Override public void exitIfBlock(CompilersParser.IfBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -227,6 +227,18 @@ public class CompilersBaseListener implements CompilersListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitElseBlock(CompilersParser.ElseBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterElseTailBlock(CompilersParser.ElseTailBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElseTailBlock(CompilersParser.ElseTailBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -316,13 +328,13 @@ public class CompilersBaseListener implements CompilersListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(CompilersParser.ExpressionContext ctx) { }
+	@Override public void enterOrExpression(CompilersParser.OrExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression(CompilersParser.ExpressionContext ctx) { }
+	@Override public void exitOrExpression(CompilersParser.OrExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -436,13 +448,13 @@ public class CompilersBaseListener implements CompilersListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMethodCall(CompilersParser.MethodCallContext ctx) { }
+	@Override public void enterDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMethodCall(CompilersParser.MethodCallContext ctx) { }
+	@Override public void exitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -53,11 +53,11 @@ public interface CompilersVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodType(CompilersParser.MethodTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CompilersParser#parameter}.
+	 * Visit a parse tree produced by {@link CompilersParser#parameterDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameter(CompilersParser.ParameterContext ctx);
+	T visitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CompilersParser#parameterType}.
 	 * @param ctx the parse tree
@@ -107,17 +107,23 @@ public interface CompilersVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitScan(CompilersParser.ScanContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CompilersParser#myIf}.
+	 * Visit a parse tree produced by {@link CompilersParser#ifBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMyIf(CompilersParser.MyIfContext ctx);
+	T visitIfBlock(CompilersParser.IfBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CompilersParser#elseBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitElseBlock(CompilersParser.ElseBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CompilersParser#elseTailBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElseTailBlock(CompilersParser.ElseTailBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CompilersParser#location}.
 	 * @param ctx the parse tree
@@ -161,11 +167,11 @@ public interface CompilersVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNExpression(CompilersParser.NExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CompilersParser#expression}.
+	 * Visit a parse tree produced by {@link CompilersParser#orExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(CompilersParser.ExpressionContext ctx);
+	T visitOrExpression(CompilersParser.OrExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CompilersParser#andExpression}.
 	 * @param ctx the parse tree
@@ -221,11 +227,11 @@ public interface CompilersVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArg(CompilersParser.ArgContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CompilersParser#methodCall}.
+	 * Visit a parse tree produced by {@link CompilersParser#declaredMethodCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMethodCall(CompilersParser.MethodCallContext ctx);
+	T visitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CompilersParser#as_op}.
 	 * @param ctx the parse tree
