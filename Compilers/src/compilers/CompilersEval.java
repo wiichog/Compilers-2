@@ -7,23 +7,27 @@ import com.sun.xml.internal.ws.util.StringUtils;
 
 public class CompilersEval extends CompilersBaseVisitor<String> {
 	public int EnvironmentCounter = 0;
-	public Stack<Integer> EnvironmentStack = new Stack<Integer>();
-	public Map<String,String[]> SymbolTable = new HashMap<String,String[]>();	
+	public String EnvironmentName = "";
+	public String ParentName = "";
+	//public Map<String,String[]> SymbolTable = new HashMap<String,String[]>();	
 	public Map<String,Map<String,String[]>> GlobalTable = new HashMap<String,Map<String,String[]>>();
 	
 	@Override 
 	public String visitProgram(CompilersParser.ProgramContext ctx) { 
 		//System.out.println("I visited visitProgram");
+		EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
+		GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 		String[] SymbolInformation = {ctx.getChild(1).getText(),"",Integer.toString(EnvironmentCounter)};
 		SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
-		//System.out.println(Arrays.toString(SymbolTable.get(ctx.getChild(1).getText())));
-		EnvironmentStack.push(EnvironmentCounter);
-		return visitChildren(ctx);
+		visitChildren(ctx);
+		return "";
 	}
 	
 	@Override 
 	public String visitVarDeclaration(CompilersParser.VarDeclarationContext ctx) { 
 		//System.out.println("I visited visitVarDeclaration");
+		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 		if(SymbolTable.containsKey(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter))){
 			String Error = "Variable  "+ ctx.getChild(1).getText() +" is already declared at line "+ ctx.getStart().getLine() + " on method visitVarDeclaration";
 			JOptionPane.showMessageDialog(null, Error, "ERROR", JOptionPane.INFORMATION_MESSAGE);
@@ -39,7 +43,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitStructDeclaration(CompilersParser.StructDeclarationContext ctx) { 
 				//System.out.println("I visited visitStructDeclaration");
-				EnvironmentCounter = EnvironmentCounter + 1;
+				Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 				if(SymbolTable.containsKey(ctx.getChild(1).getText())){
 					String Error = "Struc  "+ ctx.getChild(1).getText() +" is already declared at line "+ ctx.getStart().getLine() + " on method visitVarDeclaration";
 					JOptionPane.showMessageDialog(null, Error, "ERROR", JOptionPane.INFORMATION_MESSAGE);
@@ -48,14 +52,20 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				String[] SymbolInformation = {ctx.getChild(1).getText(),"struc",Integer.toString(EnvironmentCounter)};
 				SymbolTable.put(ctx.getChild(1).getText(), SymbolInformation);
 				}
-				return visitChildren(ctx); 
+				EnvironmentCounter = EnvironmentCounter + 1;
+				ParentName = EnvironmentName;
+				EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
+				GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+				visitChildren(ctx);
+				EnvironmentName = ParentName;
+				return ""; 
 	}
 	
 	@Override 
 	public String visitMethodDeclaration(CompilersParser.MethodDeclarationContext ctx) { 
 				//System.out.println("I visited visitMethodDeclaration");
 				//System.out.println(ctx.getText());
-				EnvironmentCounter = EnvironmentCounter + 1;
+				Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 				String Cadena = "";
 				boolean insert = true;
 				for(int i=3; i<ctx.children.size()-2;i++){
@@ -106,23 +116,30 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				if(insert==true){
 				String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter), Cadena};
 				SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
+				EnvironmentCounter = EnvironmentCounter + 1;
+				ParentName = EnvironmentName;
+				EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
+				GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+				visitChildren(ctx);
+				EnvironmentName = ParentName;
 				}
 				else{
 					String Error = "Method "+ ctx.getChild(1).getText() +" is already declared at line "+ ctx.getStart().getLine() + " on method visitMethodDeclaration";
 					JOptionPane.showMessageDialog(null, Error, "ERROR", JOptionPane.INFORMATION_MESSAGE);
 				}
-				return visitChildren(ctx); 
+				return ""; 
 	}
 	
 	@Override 
 	public String visitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx) { 
-		if(SymbolTable.containsKey(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter))){
+		Map<String,String[]> LocalTable = GlobalTable.get(EnvironmentName);
+		if(LocalTable.containsKey(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter))){
 			String Error = "Parameter  "+ ctx.getChild(1).getText() +" is already declared at line "+ ctx.getStart().getLine() + " on method visitVarDeclaration";
 			JOptionPane.showMessageDialog(null, Error, "ERROR", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else{
 		String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter)};
-		SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
+		LocalTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
 		}
 		return visitChildren(ctx); 
 	}
@@ -152,6 +169,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitAssignation(CompilersParser.AssignationContext ctx) { 
 				//System.out.println("I visited visitAssignation");
+		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 				try{
 					String TypeRight = "";
 					String TypeLeft = "";
@@ -162,7 +180,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 					if(MethodNameRight.contains("[")){
 						MethodNameRight = ctx.getChild(2).getText().substring(0, ctx.getChild(2).getText().indexOf("["));
 					}
-					TypeRight = VisitSymbolTable(MethodNameRight);
+					TypeRight = VisitSymbolTable(MethodNameRight,EnvironmentName);
 					if(TypeRight.equals("")){
 						TypeRight = visit(ctx.getChild(2));
 					}
@@ -173,7 +191,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 					if(MethodNameLeft.contains("[")){
 						MethodNameLeft = ctx.getChild(0).getText().substring(0, ctx.getChild(0).getText().indexOf("["));
 					}
-					TypeLeft = VisitSymbolTable(MethodNameLeft);
+					TypeLeft = VisitSymbolTable(MethodNameLeft,EnvironmentName);
 					if(TypeLeft.equals("")){
 						TypeLeft = visit(ctx.getChild(0));
 					}
@@ -204,6 +222,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitWhileBlock(CompilersParser.WhileBlockContext ctx) {
 				EnvironmentCounter = EnvironmentCounter + 1;
+				
 				//System.out.println("I visited visitWhileBlock");
 				return visitChildren(ctx); 
 	}
@@ -250,6 +269,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitDotLocation(CompilersParser.DotLocationContext ctx) { 
 				//System.out.println("I visited visitDotLocation");
+				Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 				String[] ctxInformation = SymbolTable.get(ctx.getChild(0).getText() + Integer.toString(EnvironmentCounter));
 				String[] FatherInformation = SymbolTable.get(ctxInformation[1]);
 				String FatherScope = FatherInformation[2];
@@ -266,17 +286,17 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	@Override 
 	public String visitVariable(CompilersParser.VariableContext ctx) { 
-		String Key = ctx.getText()+Integer.toString(EnvironmentCounter);
-		String[] SymbolInformation = null;
-		try{
-			SymbolInformation = SymbolTable.get(Key);
-			return SymbolInformation[1];
-		}
-		catch(Exception e){ 
-			String errorMessage = "Variable "+ Key +" NOT declared at line " + ctx.getStart().getLine() + " on method visitVariable";
+		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
+		String type = VisitSymbolTable(ctx.getText(),EnvironmentName);
+		if(type.equals("")){
+			String errorMessage = "Variable "+ ctx.getText() +" NOT declared at line " + ctx.getStart().getLine() + " on method visitVariable";
 			JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.INFORMATION_MESSAGE);
 			return null;
 		}
+		else{
+			return type;
+		}
+		
 	}
 	
 	@Override 
@@ -314,7 +334,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitEqualsExpression(CompilersParser.EqualsExpressionContext ctx) { 
+	public String visitEqualsExpression(CompilersParser.EqualsExpressionContext ctx) {
 				if(ctx.children.size()>1){
 					if(visit(ctx.getChild(0)).equals(visit(ctx.getChild(2)))){
 						return visit(ctx.getChild(2));
@@ -409,7 +429,11 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 		//System.out.println("I visited visitMethodCall");
 		String MethodName = ctx.getText();
 		MethodName = MethodName.substring(0,MethodName.indexOf("("));
-		String MethodType = VisitSymbolTable(MethodName);
+		String MethodType = VisitSymbolTable(MethodName,EnvironmentName);
+		if(MethodType.equals("")){
+			MethodType = BringMethodType(MethodName);
+			System.out.println("this is the type of the method " + MethodType);
+		}
 		if(MethodType.equals("")){
 			String errorMessage = "The method " + MethodName + " is not declared at line " + ctx.getStart().getLine();
 			JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.INFORMATION_MESSAGE);
@@ -419,7 +443,10 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 			ParametersType = ParametersType + "," + visit(ctx.getChild(i).getChild(0));
 		}
 		ParametersType = ParametersType.substring(1, ParametersType.length());
-		String ParametersSimbolTable = getTypeParameters(MethodName);
+		String ParametersSimbolTable = getTypeParameters(MethodName,EnvironmentName);
+		if(ParametersSimbolTable.equals("")){
+			ParametersSimbolTable = BringParametersType(MethodName);
+		}
 		if(!(ParametersType.equals(ParametersSimbolTable))){
 			String errorMessage = "Sending a diferent number of parameters in method " + MethodName + " at line " + ctx.getStart().getLine();
 			JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.INFORMATION_MESSAGE);
@@ -489,7 +516,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				return "boolean"; 
 	}
 	
-	public String VisitSymbolTable(String Key){
+	public String VisitSymbolTable(String Key,String ScopeName){
+		Map<String,String[]> SymbolTable = GlobalTable.get(ScopeName);
 		String[] Information = null;
 		for (Map.Entry<String,String[]> e : SymbolTable.entrySet()){
 			//System.out.println("SymbolTable " + e.getKey());
@@ -503,13 +531,48 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 		return "";
 	}
 	
-	public String getTypeParameters(String Key){
+	public String getTypeParameters(String Key, String ScopeName){
+		Map<String,String[]> SymbolTable = GlobalTable.get(ScopeName);
 		String[] Information = null;
 		for (Map.Entry<String,String[]> e : SymbolTable.entrySet()){
 			//System.out.println("SymbolTable " + e.getKey());
 			if (e.getKey().startsWith(Key)) {
 				Information = SymbolTable.get(e.getKey());
 				return Information[3];
+			}
+			
+		}
+		return "";
+	}
+	
+	public String BringMethodType(String MethodName){
+		for (Map.Entry<String,Map<String,String[]>> e : GlobalTable.entrySet()){
+			//System.out.println("SymbolTable " + e.getKey());
+			if (e.getKey().startsWith("Program")) {
+				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
+				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
+					if(entry.getKey().startsWith(MethodName)){
+						String[] Information = MethodInformation.get(entry.getKey());
+						return Information[1];
+					}
+				}
+			}
+			
+		}
+		return "";
+	}
+	
+	public String BringParametersType(String MethodName){
+		for (Map.Entry<String,Map<String,String[]>> e : GlobalTable.entrySet()){
+			//System.out.println("SymbolTable " + e.getKey());
+			if (e.getKey().startsWith("Program")) {
+				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
+				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
+					if(entry.getKey().startsWith(MethodName)){
+						String[] Information = MethodInformation.get(entry.getKey());
+						return Information[3];
+					}
+				}
 			}
 			
 		}

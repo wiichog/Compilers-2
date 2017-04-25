@@ -258,8 +258,12 @@ class TabbedPanel extends JFrame {
 	  CompilersEval Visitor = new CompilersEval();
 	  Visitor.visit(tree);
 	  System.out.println("******************************************");
-			for (Map.Entry entry : Visitor.SymbolTable.entrySet()) {
-				    System.out.println(entry.getKey() + ", " + Arrays.toString(Visitor.SymbolTable.get(entry.getKey())));
+			for (Map.Entry entry : Visitor.GlobalTable.entrySet()) {
+				    System.out.println("Key " + entry.getKey());
+				    Map<String,String[]> SymbolTable = Visitor.GlobalTable.get(entry.getKey());
+				    for(Map.Entry e : SymbolTable.entrySet()){
+				    	System.out.println("Second Key " + e.getKey() + " value " + Arrays.toString(SymbolTable.get(e.getKey())));
+				    }
 			   }
 	  System.out.println("******************************************");
 	  
