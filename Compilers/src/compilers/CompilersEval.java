@@ -10,13 +10,13 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	public String EnvironmentName = "";
 	public String ParentName = "";
 	//public Map<String,String[]> SymbolTable = new HashMap<String,String[]>();	
-	public Map<String,Map<String,String[]>> GlobalTable = new HashMap<String,Map<String,String[]>>();
+	public Map<String,LinkedHashMap<String,String[]>> GlobalTable = new LinkedHashMap<String,LinkedHashMap<String,String[]>>();
 	
 	@Override 
 	public String visitProgram(CompilersParser.ProgramContext ctx) { 
 		//System.out.println("I visited visitProgram");
 		EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
-		GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+		GlobalTable.put(EnvironmentName,new LinkedHashMap<String,String[]>());
 		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
 		String[] SymbolInformation = {ctx.getChild(1).getText(),"",Integer.toString(EnvironmentCounter)};
 		SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
@@ -55,7 +55,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				EnvironmentCounter = EnvironmentCounter + 1;
 				ParentName = EnvironmentName;
 				EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
-				GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+				GlobalTable.put(EnvironmentName,new LinkedHashMap<String,String[]>());
 				visitChildren(ctx);
 				EnvironmentName = ParentName;
 				return ""; 
@@ -119,7 +119,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 				EnvironmentCounter = EnvironmentCounter + 1;
 				ParentName = EnvironmentName;
 				EnvironmentName = ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter);
-				GlobalTable.put(EnvironmentName,new HashMap<String,String[]>());
+				GlobalTable.put(EnvironmentName,new LinkedHashMap<String,String[]>());
 				visitChildren(ctx);
 				EnvironmentName = ParentName;
 				}
@@ -362,6 +362,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 					for(int i =0;i<ctx.children.size();i++){
 						if(i % 2 == 0){
 							if(type==null){
+								//System.out.println("prueba " + ctx.getChild(i).getText());
+								//System.out.println("type " + visit(ctx.getChild(i)));
 								type = visit(ctx.getChild(i));
 							}
 							else if(type.equals(visit(ctx.getChild(i)))&&(!ctx.getChild(i).equals("boolean")));
@@ -427,12 +429,12 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	@Override 
 	public String visitDeclaredMethodCall(CompilersParser.DeclaredMethodCallContext ctx) { 
 		//System.out.println("I visited visitMethodCall");
+		//System.out.println("This is CTX " + ctx.getText());
 		String MethodName = ctx.getText();
 		MethodName = MethodName.substring(0,MethodName.indexOf("("));
 		String MethodType = VisitSymbolTable(MethodName,EnvironmentName);
 		if(MethodType.equals("")){
 			MethodType = BringMethodType(MethodName);
-			System.out.println("this is the type of the method " + MethodType);
 		}
 		if(MethodType.equals("")){
 			String errorMessage = "The method " + MethodName + " is not declared at line " + ctx.getStart().getLine();
@@ -443,15 +445,15 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 			ParametersType = ParametersType + "," + visit(ctx.getChild(i).getChild(0));
 		}
 		ParametersType = ParametersType.substring(1, ParametersType.length());
-		String ParametersSimbolTable = getTypeParameters(MethodName,EnvironmentName);
-		if(ParametersSimbolTable.equals("")){
-			ParametersSimbolTable = BringParametersType(MethodName);
-		}
+		String ParametersSimbolTable = BringParametersType(MethodName);
+		//if(ParametersSimbolTable.equals("")){
+		//	ParametersSimbolTable = BringParametersType(MethodName);
+		//}
 		if(!(ParametersType.equals(ParametersSimbolTable))){
 			String errorMessage = "Sending a diferent number of parameters in method " + MethodName + " at line " + ctx.getStart().getLine();
 			JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.INFORMATION_MESSAGE);
 		}
-		return visitChildren(ctx); 
+		return MethodType; 
 	}
 
 	
@@ -535,7 +537,6 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 		Map<String,String[]> SymbolTable = GlobalTable.get(ScopeName);
 		String[] Information = null;
 		for (Map.Entry<String,String[]> e : SymbolTable.entrySet()){
-			//System.out.println("SymbolTable " + e.getKey());
 			if (e.getKey().startsWith(Key)) {
 				Information = SymbolTable.get(e.getKey());
 				return Information[3];
@@ -546,9 +547,8 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	public String BringMethodType(String MethodName){
-		for (Map.Entry<String,Map<String,String[]>> e : GlobalTable.entrySet()){
-			//System.out.println("SymbolTable " + e.getKey());
-			if (e.getKey().startsWith("Program")) {
+		for (Map.Entry<String,LinkedHashMap<String,String[]>> e : GlobalTable.entrySet()){
+			if (e.getKey().startsWith("program")) {
 				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
 				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
 					if(entry.getKey().startsWith(MethodName)){
@@ -563,9 +563,9 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	}
 	
 	public String BringParametersType(String MethodName){
-		for (Map.Entry<String,Map<String,String[]>> e : GlobalTable.entrySet()){
+		for (Map.Entry<String,LinkedHashMap<String,String[]>> e : GlobalTable.entrySet()){
 			//System.out.println("SymbolTable " + e.getKey());
-			if (e.getKey().startsWith("Program")) {
+			if (e.getKey().startsWith("program")) {
 				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
 				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
 					if(entry.getKey().startsWith(MethodName)){
