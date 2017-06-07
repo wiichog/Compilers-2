@@ -6,6 +6,7 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public Map<String,LinkedHashMap<String,String[]>> Methods = new LinkedHashMap<String,LinkedHashMap<String,String[]>>();
 	public Map<String,LinkedHashMap<String,String[]>> SymbolTable = new LinkedHashMap<String,LinkedHashMap<String,String[]>>();
 	public ArrayList<String> MethodName = new ArrayList<String>();
+	public Stack<String> TemporalStack = new Stack<String>();
 	public String EnvironmentName = "";
 	public String ParentName = "";
 	public int AssignationCounter = 0;
@@ -13,9 +14,15 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public int IfCounter= 0;
 	public int WhileCounter = 0;
 	public int OffSet = 0;
+	public int LabelCounter = 0;
+	public boolean IfFlag = false;
+	public boolean Flag = false;
+	public boolean Arg=false;
+	public boolean WhileFlag=false;
 	public String TempParent = "";
 	public Stack<String> End = new Stack<String>();
 	public BufferedWriter bw;
+	public Map<String,String> OffsetVariable = new LinkedHashMap<String,String>();
 	
 	public CompilersMidCode(Map<String, LinkedHashMap<String, String[]>> mapTree){
 		this.SymbolTable = mapTree;	
@@ -57,6 +64,7 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
  		//System.out.println("I visited visitMethodDeclaration");
  		//System.out.println("This is ctx " + ctx.getText());
 		try{
+		bw.write("\n");
 		bw.write("FUNCTION " + ctx.getChild(1).getText() + ":\n");
 		AssignationCounter = 0;
 		EnvironmentName = ctx.getChild(1).getText();
@@ -74,33 +82,26 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitVarDeclaration(CompilersParser.VarDeclarationContext ctx){ 
  		//System.out.println("I visited visitVarDeclaration");
  		//System.out.println("This is ctx " + ctx.getText());
-		try{
-		//Map<String,String[]> VariablesInMethodSymbolTable = SymbolTable.get(EnvironmentName);
-		//System.out.println("The size of the map is " + SymbolTable.size());
-		//System.out.println("*********************************");
-		//for(Map.Entry e : SymbolTable.entrySet()){
-		//    	System.out.println("Key2 " + e.getKey());
-		// }
-		//System.out.println("*********************************");
-		Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
-		if(ctx.children.size()<4){
-			AssignationCounter++;
-			bw.write("fp[" + ctx.getChild(1).getText() + "*8] = 0;" +";\n");
-			String[] Triplet = {ctx.getChild(1).getText(),"","0"};
-			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"=", Triplet);
-		}
-		if(ctx.getText().contains("[")){
-			TemporalCounter ++;
-			AssignationCounter++;
-			String[] Triplet = {ctx.getChild(3).getText(),"8","T"+Integer.toString(TemporalCounter)};
-			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"*", Triplet);
-			bw.write("T"+Integer.toString(TemporalCounter) + " = " +  ctx.getChild(3).getText() + "*" + "8" +";\n");
-			AssignationCounter++;
-			String[] Triplet1 = {ctx.getChild(1).getText(),"","T"+Integer.toString(TemporalCounter)};
-			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"=", Triplet1);
-			bw.write(ctx.getChild(1).getText() + " = " + "T"+Integer.toString(TemporalCounter) +";\n");
-		}}
-		catch(Exception e){}
+		//try{
+		//Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
+		//if(ctx.children.size()<4){
+		//	AssignationCounter++;
+		//	bw.write("t"+Integer.toString(TemporalCounter) + " = " + "fp[" + OffSet + "]" +" == 0; \n");
+		//	TemporalCounter ++;
+			if(ctx.getChild(0).getChild(0).getText().equals("int")){
+				OffSet = OffSet +8;
+			}
+			else if(ctx.getChild(0).getChild(0).getText().equals("char")){
+				OffSet = OffSet +4;
+			}
+			else if(ctx.getChild(0).getChild(0).getText().equals("boolean")){
+				OffSet = OffSet +1;
+			}
+		//	String[] Triplet = {ctx.getChild(1).getText(),"","0"};
+		//	Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"=", Triplet);
+		//}
+		//}
+		//catch(Exception e){}
  		return visitChildren(ctx); 
  }
 	
@@ -110,15 +111,20 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitParameterDeclaration(CompilersParser.ParameterDeclarationContext ctx){ 
  		//System.out.println("I visited visitParameterDeclaration");
  		//System.out.println("This is ctx " + ctx.getText());
-		try{
-		Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
-		for(int i=1;i<ctx.children.size();i=i+2){
-			OffSet = OffSet +4;
-			String[] Triplet1 = {ctx.getChild(1).getText(),"","0"};
-			bw.write("T"+Integer.toString(TemporalCounter) + " = fp[" + OffSet + "];\n");
-			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"PARAMETER", Triplet1);
-		}}
-		catch(Exception e){}
+		//try{
+		//AssignationCounter++;
+		//bw.write("t"+Integer.toString(TemporalCounter) + " = " + "fp[" + OffSet + "]" +" == 0; \n");
+		//TemporalCounter ++;
+		//if(ctx.getChild(0).getChild(0).getText().equals("int")){
+		//	OffSet = OffSet +8;
+		//}
+		//else if(ctx.getChild(0).getChild(0).getText().equals("char")){
+		///	OffSet = OffSet +4;
+		//}
+		//else if(ctx.getChild(0).getChild(0).getText().equals("boolean")){
+		//	OffSet = OffSet +1;
+		//}}
+		//catch(Exception e){}
  		return visitChildren(ctx); 
  }
 	
@@ -128,7 +134,7 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 		//System.out.println("I visited visitAssignation");
  		//System.out.println("This is ctx " + ctx.getText());
 		Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
-		if(ctx.getChild(2).getText().contains("(") && ctx.getChild(2).getText().contains("[")){
+	 	if(ctx.getChild(2).getText().contains("(") && ctx.getChild(2).getText().contains("[")){
 			visitChildren(ctx);
 			AssignationCounter++;
 			String[] Triplet1 = {"T"+Integer.toString(TemporalCounter-1),"",ctx.getChild(2).getText()};
@@ -160,9 +166,16 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"+", Triplet1);
 		}
 		else{//
-			visitChildren(ctx);
+			
 			TemporalCounter ++;
 			AssignationCounter++;
+			try{
+				bw.write("\t"+bringOffsetVariable(ctx.getChild(0).getText()) + ctx.getChild(1).getText() + ctx.getChild(2).getText() + "; \n");
+			}
+			catch(Exception e){
+				
+			}
+			visitChildren(ctx);
 			String[] Triplet = {ctx.getChild(0).getText(),"",ctx.getChild(2).getText()};
 			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(1).getText()+","+"=", Triplet);
 		}
@@ -184,11 +197,12 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 		Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(1).getText()+","+"=", Triplet);
 		EnvironmentName = Name;
 		bw.write("STARTWHILE_" + WhileCounter + ";\n");
+		WhileFlag=true;
 		visitChildren(ctx);
 		bw.write("ENDWHILE_" + WhileCounter+ ";\n");
 		}
 		catch(Exception e){}
- 		return visitChildren(ctx); 
+ 		return ""; 
  }
 	
 	@Override 
@@ -213,14 +227,25 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitIfBlock(CompilersParser.IfBlockContext ctx){ 
  		//System.out.println("I visited visitIfBlock");
  		//System.out.println("This is ctx " + ctx.getText());
+		try{
 		IfCounter ++;
+		LabelCounter ++;
 		TempParent = ParentName;
 		ParentName = ParentName + "," + "if" + IfCounter  + "," + ctx.getChild(2).getText();
  		Methods.put(ParentName,new LinkedHashMap<String,String[]>());
- 		EnvironmentName = ParentName;
- 		ParentName = TempParent;
- 		ParentName = ParentName + "," + "else"+ IfCounter + "," + ctx.getChild(2).getText();	
+ 		Flag=true;
+ 		visit(ctx.getChild(2));
+ 		Flag=false;
+ 		IfFlag = true;
+ 		bw.write("\t"+"IF t" + TemporalCounter + " > " + 0 + " GOTO LABEL_TRUE_"+ LabelCounter + "\n");
+ 		bw.write("\t"+"GOTO LABEL_FALSE_"+ LabelCounter + "\n");
  		visitChildren(ctx);
+ 		bw.write("\t"+"ENDIF_"+ IfCounter +"\n");
+ 		//EnvironmentName = ParentName;
+ 		ParentName = TempParent;
+ 		ParentName = ParentName + "," + "else"+ IfCounter + "," + ctx.getChild(2).getText();
+ 		}
+		catch(Exception e){}
  		//ParentName=TempParent;
  		return ""; 
  }
@@ -229,9 +254,17 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitElseBlock(CompilersParser.ElseBlockContext ctx){ 
  		//System.out.println("I visited visitElseBlock");
  		//System.out.println("This is ctx " + ctx.getText());
+		try{
+			bw.write("LABEL_FALSE_"+ LabelCounter + ":\n");
+			visitChildren(ctx);
+			bw.write("\t"+"GOTO END_IF"+ IfCounter + "\n");
+		}
+		catch(Exception e){
+			
+		}
  		Methods.put(ParentName,new LinkedHashMap<String,String[]>());
- 		EnvironmentName = ParentName;
- 		visitChildren(ctx);
+ 		//EnvironmentName = ParentName;
+
  		ParentName = TempParent;
  		return ""; 
  }
@@ -270,7 +303,29 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitBlock(CompilersParser.BlockContext ctx){ 
  		//System.out.println("I visited visitBlock");
  		//System.out.println("This is ctx " + ctx.getText());
- 		return visitChildren(ctx); 
+		try{
+			if(IfFlag==true){
+				bw.write("LABEL_TRUE_"+ LabelCounter + ":\n");
+				visitChildren(ctx);
+				bw.write("\t"+"GOTO END_IF"+ IfCounter + "\n");
+				IfFlag=false;	
+			}
+			if(WhileFlag==true){
+				LabelCounter++;
+				bw.write("\t"+"IF t" + TemporalCounter + " > " + 0 + " GOTO LABEL_TRUE_"+ LabelCounter + "\n");
+		 		bw.write("\t"+"GOTO LABEL_FALSE_"+ LabelCounter + "\n");
+				visitChildren(ctx);
+				bw.write("\t"+"GOTO ENDWHILE_"+ WhileCounter + "\n");
+				WhileFlag=false;	
+			}
+			else{
+				visitChildren(ctx);
+			}
+		}
+		catch(Exception e){
+			
+		}
+ 		return ""; 
  }
 	
 	@Override 
@@ -298,7 +353,7 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitElseTailBlock(CompilersParser.ElseTailBlockContext ctx){ 
  		//System.out.println("I visited visitElseTailBlock");
  		//System.out.println("This is ctx " + ctx.getText());
- 		return visitChildren(ctx); 
+ 		return visitChildren(ctx);
  }
 	
 	@Override 
@@ -373,13 +428,18 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitEqualsExpression(CompilersParser.EqualsExpressionContext ctx){ 
  		//System.out.println("I visited visitEqualsExpression");
  		//System.out.println("This is ctx " + ctx.getText());
-		if(ctx.children.size()>1){
-		Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
-		TemporalCounter ++;
-		AssignationCounter++;
-		String[] Triplet = {ctx.getChild(0).getText(),ctx.getChild(2).getText(),"T"+Integer.toString(TemporalCounter)};
-		Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+ctx.getChild(1).getText(), Triplet);
-		}
+		try{
+			if(ctx.children.size()>1){
+				Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
+				TemporalCounter ++;
+				AssignationCounter++;
+				String[] Triplet = {ctx.getChild(0).getText(),ctx.getChild(2).getText(),"T"+Integer.toString(TemporalCounter)};
+				Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+ctx.getChild(1).getText(), Triplet);
+			if(ctx.children.size()>2 && Flag==true){
+				bw.write("\t"+"t"+Integer.toString(TemporalCounter) + " = " + "fp[" + OffSet + "]" + ctx.getChild(1).getText() + ctx.getChild(2).getText() + "; \n");
+			}
+			}}
+		catch(Exception e){}
  		return visitChildren(ctx); 
  }
 	
@@ -388,13 +448,13 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
  		//System.out.println("I visited visitRelationExpression");
  		//System.out.println("This is ctx " + ctx.getText());
 		try{
-			if(ctx.children.size()>1){
-			bw.write("T" + TemporalCounter + " = " + ctx.getChild(0).getText() + " " + ctx.getChild(1).getText() + " " + ctx.getChild(2).getText() + ";\n");
+			if(ctx.children.size()>2){
+				TemporalCounter++;
+				bw.write("\t"+"t"+Integer.toString(TemporalCounter) + " = " + "fp[" + OffSet + "]" + ctx.getChild(1).getText() + ctx.getChild(2).getText() + "; \n");
+				//IfFlag=true;
 			}
 		}
-		catch(Exception e){
-			
-		}
+		catch(Exception e){}
  		return visitChildren(ctx); 
  }
 	
@@ -402,7 +462,16 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitAddSubsExpression(CompilersParser.AddSubsExpressionContext ctx){ 
  		//System.out.println("I visited visitAddSubsExpression");
  		//System.out.println("This is ctx " + ctx.getText());
-		return visitChildren(ctx);
+		visitChildren(ctx);
+		try{
+			if(TemporalStack.size()>1){
+			TemporalCounter++;
+			bw.write("\t"+"t"+Integer.toString(TemporalCounter) + " = " + TemporalStack.pop().toString() + " + " + TemporalStack.pop().toString() + "; \n");
+		}}
+		catch(Exception e){
+			
+		}
+		return "";
  }
 	
 	@Override 
@@ -437,7 +506,19 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
 	public String visitArg(CompilersParser.ArgContext ctx){ 
  		//System.out.println("I visited visitArg");
  		//System.out.println("This is ctx " + ctx.getText());
- 		return visitChildren(ctx); 
+		try{
+			TemporalCounter ++;
+			bw.write("\t"+"t"+Integer.toString(TemporalCounter) + " = " + bringOffsetVariable(ctx.getChild(0).getText()) + "; \n");
+			bw.write("\t PARAM " +"t"+Integer.toString(TemporalCounter) + "; \n");
+			TemporalStack.push("t"+Integer.toString(TemporalCounter));
+			End.push("t"+Integer.toString(TemporalCounter));
+			
+		}
+		catch(Exception e){
+			
+		}
+		visitChildren(ctx);
+		return ""; 
  }
 	
 	@Override 
@@ -445,13 +526,22 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
  		//System.out.println("I visited visitDeclaredMethodCall");
  		//System.out.println("This is ctx " + ctx.getText());
  		//System.out.println("EnvironmentName " + EnvironmentName);
+		visit(ctx.getChild(2));
 		Map<String,String[]> Quadruplets = Methods.get(EnvironmentName);
-		visitChildren(ctx);
-		for(int i=2;i<ctx.children.size();i=i+2){
-			AssignationCounter++;
-			String[] Triplet1 = {"","","T"+Integer.toString(TemporalCounter)};
-			Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(i).getText()+","+"PARAM", Triplet1);
+		//visit(ctx.getChild(2));
+		try{
+			bw.write("\t CALL " + ctx.getChild(0).getText() + "; \n");
+			for(int i=2;i<ctx.children.size();i=i+2){
+				AssignationCounter++;
+				TemporalCounter ++;
+				String[] Triplet1 = {"","","T"+Integer.toString(TemporalCounter)};
+				Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(i).getText()+","+"PARAM", Triplet1);
+			}
+			
 		}
+		catch(Exception e){
+		}
+		
 		AssignationCounter++;
 		String[] Triplet = {"","",ctx.getChild(0).getText()};
 		Quadruplets.put(Integer.toString(AssignationCounter) + "," + ctx.getChild(0).getText()+","+"CALL", Triplet);
@@ -527,5 +617,19 @@ public class CompilersMidCode extends CompilersBaseVisitor<String> {
  		//System.out.println("This is ctx " + ctx.getText());
  		return visitChildren(ctx); 
  }
+	
+	public String bringOffsetVariable(String VariableName){
+		for (Map.Entry<String,LinkedHashMap<String,String[]>> e : SymbolTable.entrySet()){
+			//System.out.println("SymbolTable " + e.getKey());
+			Map<String,String[]> MethodInformation = SymbolTable.get(e.getKey());
+				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
+					if(entry.getKey().startsWith(VariableName)){
+						String[] Information = MethodInformation.get(entry.getKey());
+						return Information[3];
+					}
+				}
+			}
+		return "";
+	}
 
 }

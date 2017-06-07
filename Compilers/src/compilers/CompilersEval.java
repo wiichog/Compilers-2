@@ -9,6 +9,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	public int EnvironmentCounter = 0;
 	public String EnvironmentName = "";
 	public String ParentName = "";
+	public int OffSet=0;
 	//public Map<String,String[]> SymbolTable = new HashMap<String,String[]>();	
 	public Map<String,LinkedHashMap<String,String[]>> GlobalTable = new LinkedHashMap<String,LinkedHashMap<String,String[]>>();
 	
@@ -28,12 +29,21 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	public String visitVarDeclaration(CompilersParser.VarDeclarationContext ctx) { 
 		//System.out.println("I visited visitVarDeclaration");
 		Map<String,String[]> SymbolTable = GlobalTable.get(EnvironmentName);
+		if(ctx.getChild(0).getChild(0).getText().equals("int")){
+			OffSet = OffSet +8;
+		}
+		else if(ctx.getChild(0).getChild(0).getText().equals("char")){
+			OffSet = OffSet +4;
+		}
+		else if(ctx.getChild(0).getChild(0).getText().equals("boolean")){
+			OffSet = OffSet +1;
+		}
 		if(SymbolTable.containsKey(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter))){
 			String Error = "Variable  "+ ctx.getChild(1).getText() +" is already declared at line "+ ctx.getStart().getLine() + " on method visitVarDeclaration";
 			JOptionPane.showMessageDialog(null, Error, "ERROR", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else{
-		String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter)};
+		String[] SymbolInformation = {ctx.getChild(1).getText(),ctx.getChild(0).getText(),Integer.toString(EnvironmentCounter),"fp[" + OffSet + "]"};
 		SymbolTable.put(ctx.getChild(1).getText() + Integer.toString(EnvironmentCounter), SymbolInformation);
 		}
 		return visitChildren(ctx); 
@@ -548,7 +558,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	
 	public String BringMethodType(String MethodName){
 		for (Map.Entry<String,LinkedHashMap<String,String[]>> e : GlobalTable.entrySet()){
-			if (e.getKey().startsWith("program")) {
+			if (e.getKey().startsWith("program") || e.getKey().startsWith("Program")) {
 				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
 				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
 					if(entry.getKey().startsWith(MethodName)){
@@ -565,7 +575,7 @@ public class CompilersEval extends CompilersBaseVisitor<String> {
 	public String BringParametersType(String MethodName){
 		for (Map.Entry<String,LinkedHashMap<String,String[]>> e : GlobalTable.entrySet()){
 			//System.out.println("SymbolTable " + e.getKey());
-			if (e.getKey().startsWith("program")) {
+			if (e.getKey().startsWith("program") || e.getKey().startsWith("Program")) {
 				Map<String,String[]> MethodInformation = GlobalTable.get(e.getKey());
 				for(Map.Entry<String, String[]> entry : MethodInformation.entrySet()){
 					if(entry.getKey().startsWith(MethodName)){

@@ -257,7 +257,7 @@ class TabbedPanel extends JFrame {
 	  
 	  CompilersEval Visitor = new CompilersEval();
 	  Visitor.visit(tree);
-	  System.out.println("*****************2*************************");
+	  System.out.println("*****************Tabla de Simbolos*************************");
 	  	for (Map.Entry entry : Visitor.GlobalTable.entrySet()) {
 	  		    System.out.println("Key " + entry.getKey());
 	  		    Map<String,String[]> SymbolTable = Visitor.GlobalTable.get(entry.getKey());
@@ -265,17 +265,17 @@ class TabbedPanel extends JFrame {
 	  		    	System.out.println("Second Key " + e.getKey() + " value " + Arrays.toString(SymbolTable.get(e.getKey())));
 	  		    }
 	  	   }
-	  System.out.println("******************2************************");
+	  System.out.println("******************Tabla de Simbolos************************");
 	  CompilersMidCode MidCode = new CompilersMidCode(Visitor.GlobalTable);
 	  MidCode.visit(tree);
-	  // System.out.println("******************************************");
-	  //	for (Map.Entry entry : MidCode.Methods.entrySet()) {
-	  //		    System.out.println("Key " + entry.getKey());
-	  //		    Map<String,String[]> SymbolTable = MidCode.Methods.get(entry.getKey());
-	  //		    for(Map.Entry e : SymbolTable.entrySet()){
-	  //		    	System.out.println("Second Key " + e.getKey() + " value " + Arrays.toString(SymbolTable.get(e.getKey())));
-	  //		    }
-	  //	   }
-	  //System.out.println("******************************************");
+	   System.out.println("******************Cuadruplas************************");
+	  	for (Map.Entry entry : MidCode.Methods.entrySet()) {
+	  		    System.out.println("Key " + entry.getKey());
+	  		    Map<String,String[]> SymbolTable = MidCode.Methods.get(entry.getKey());
+	  		    for(Map.Entry e : SymbolTable.entrySet()){
+	  	    	System.out.println("Second Key " + e.getKey() + " value " + Arrays.toString(SymbolTable.get(e.getKey())));
+	  	    }
+	  	   }
+	  System.out.println("*******************Cuadruplas***********************");
 	}
 }
