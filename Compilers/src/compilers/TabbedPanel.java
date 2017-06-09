@@ -268,7 +268,7 @@ class TabbedPanel extends JFrame {
 	  System.out.println("******************Tabla de Simbolos************************");
 	  CompilersMidCode MidCode = new CompilersMidCode(Visitor.GlobalTable);
 	  MidCode.visit(tree);
-	   System.out.println("******************Cuadruplas************************");
+	   System.out.println("******************basic blocks************************");
 	  	for (Map.Entry entry : MidCode.Methods.entrySet()) {
 	  		    System.out.println("Key " + entry.getKey());
 	  		    Map<String,String[]> SymbolTable = MidCode.Methods.get(entry.getKey());
@@ -276,6 +276,6 @@ class TabbedPanel extends JFrame {
 	  	    	System.out.println("Second Key " + e.getKey() + " value " + Arrays.toString(SymbolTable.get(e.getKey())));
 	  	    }
 	  	   }
-	  System.out.println("*******************Cuadruplas***********************");
+	  System.out.println("*******************basic blocks***********************");
 	}
 }
